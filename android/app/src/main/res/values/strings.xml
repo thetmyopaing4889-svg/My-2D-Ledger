@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">AegisVPN</string>
-    <string name="tile_name">Aegis VPN</string>
-    <string name="vpn_running">VPN is connected</string>
-    <string name="vpn_disconnected">VPN is disconnected</string>
-    <string name="vpn_connecting">Establishing secure tunnel…</string>
-    <string name="channel_name">VPN Connection Status</string>
-    <string name="channel_description">Persistent notification required by Android for foreground VPN service.</string>
-</resources>
