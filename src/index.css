@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@keyframes purple-shockwave {
+  0% {
+    transform: scale(0.85);
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(192, 132, 252, 0.9), inset 0 0 15px rgba(216, 180, 254, 0.8);
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+    box-shadow: 0 0 60px rgba(168, 85, 247, 0);
+  }
+}
+
+@keyframes purple-plasma-flash {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.9);
+    filter: brightness(1.6);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.15);
+    filter: brightness(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+@keyframes purple-spin-smooth {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes purple-spin-reverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-purple-shockwave {
+  animation: purple-shockwave 0.85s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
+}
+
+.animate-purple-flash {
+  animation: purple-plasma-flash 0.6s ease-out forwards;
+}

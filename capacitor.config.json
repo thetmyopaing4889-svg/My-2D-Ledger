@@ -1,0 +1,8 @@
+{
+  "appId": "com.aegis.vpn",
+  "appName": "Aegis Tunnel",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
