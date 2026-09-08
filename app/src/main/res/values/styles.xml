@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.My2DLedger" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#25C2A0</item>
+        <item name="android:navigationBarColor">#09111F</item>
+        <item name="android:statusBarColor">#09111F</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

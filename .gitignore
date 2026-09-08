@@ -1,8 +1,21 @@
-node_modules/
+# Android / Gradle
+.gradle/
 build/
-dist/
-coverage/
-.DS_Store
-*.log
-.env*
-!.env.example
+*/build/
+local.properties
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Replit workspace helpers
+.cache/
+.conversation/
+node_modules/
+
+# Secrets and generated files
+*.jks
+*.keystore
+*.hprof
+google-services.json
