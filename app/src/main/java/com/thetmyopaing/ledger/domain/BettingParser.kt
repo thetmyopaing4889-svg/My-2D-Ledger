@@ -35,15 +35,19 @@ fun normalizeDigits(value: String): String =
     value.map { burmeseDigits[it] ?: it }.joinToString("")
 
 fun normalizeDigit(value: String): String? {
-    val digits = normalizeDigits(value).filter(Char::isDigit)
-    if (digits.isEmpty() || digits.length > 2) return null
+    val digits = normalizeDigits(value.trim())
+    if (digits.isEmpty() || digits.length > 2 || digits.any { !it.isDigit() }) return null
     return digits.padStart(2, '0')
 }
 
 fun parseQuickFormat(format: QuickFormat, amountText: String): ParseResult {
     val amount = parseAmount(amountText) ?: return ParseResult(errors = listOf("ပမာဏမှန်ကန်စွာ ထည့်ပါ"))
-    val digits = format.description.split(" ")
-    return ParseResult(digits.map { ParsedBet(it, amount, format.title) })
+    val bets = linkedMapOf<String, ParsedBet>()
+    format.description.split(" ").forEach { digit ->
+        val previous = bets[digit]
+        bets[digit] = ParsedBet(digit, (previous?.amount ?: 0L) + amount, format.title)
+    }
+    return ParseResult(bets.values.toList())
 }
 
 fun parseAhKway(source: String, amountText: String, includeDoubles: Boolean): ParseResult {
@@ -88,12 +92,19 @@ fun parseManual(raw: String): ParseResult {
         val numbers = splitNumberPart(reverseMatch.groupValues[1])
         if (numbers.isEmpty()) return ParseResult(errors = listOf("ဂဏန်းမတွေ့ပါ"))
         val output = linkedMapOf<String, ParsedBet>()
+        fun add(digit: String, source: String) {
+            val previous = output[digit]
+            output[digit] = ParsedBet(
+                digit = digit,
+                amount = (previous?.amount ?: 0L) + amount,
+                source = source,
+            )
+        }
         numbers.forEach { rawDigit ->
             val digit = normalizeDigit(rawDigit)
                 ?: return ParseResult(errors = listOf("$rawDigit သည် 00–99 မဟုတ်ပါ"))
-            listOf(digit, digit.reversed()).forEach { value ->
-                output[value] = ParsedBet(value, amount, "$digit R")
-            }
+            add(digit, "$digit R")
+            if (digit != digit.reversed()) add(digit.reversed(), "$digit R")
         }
         return ParseResult(output.values.toList())
     }

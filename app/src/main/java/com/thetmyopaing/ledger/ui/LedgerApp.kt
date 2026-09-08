@@ -84,6 +84,7 @@ import com.thetmyopaing.ledger.data.CustomerEntity
 import com.thetmyopaing.ledger.data.LedgerSnapshot
 import com.thetmyopaing.ledger.domain.QuickFormat
 import com.thetmyopaing.ledger.domain.allDigits
+import com.thetmyopaing.ledger.domain.businessToday
 import com.thetmyopaing.ledger.domain.commission
 import com.thetmyopaing.ledger.domain.payout
 import java.time.LocalDate
@@ -618,7 +619,7 @@ private fun BettingScreen(
 ) {
     if (customer == null) return
     val agent = snapshot.agents.firstOrNull { it.id == customer.agentId }
-    var date by remember { mutableStateOf(LocalDate.now().toString()) }
+    var date by remember { mutableStateOf(businessToday()) }
     var session by remember { mutableStateOf("မနက်") }
     var rawInput by remember { mutableStateOf("") }
     var quickAmount by remember { mutableStateOf("100") }
@@ -969,7 +970,7 @@ private fun GlobalNumbersScreen(
     viewModel: LedgerViewModel,
     onBack: () -> Unit,
 ) {
-    var date by remember { mutableStateOf(LocalDate.now().toString()) }
+    var date by remember { mutableStateOf(businessToday()) }
     var session by remember { mutableStateOf("မနက်") }
     var digit by remember { mutableStateOf("") }
     LedgerScaffold("ထီပေါက်စဉ်", "Global winning numbers", onBack = onBack) { padding ->
@@ -1022,7 +1023,7 @@ private fun ClosedDaysScreen(
     viewModel: LedgerViewModel,
     onBack: () -> Unit,
 ) {
-    var date by remember { mutableStateOf(LocalDate.now().toString()) }
+    var date by remember { mutableStateOf(businessToday()) }
     LedgerScaffold("Closed Day", "Global • all Agents and Customers", onBack = onBack) { padding ->
         LazyColumn(
             Modifier.padding(padding).fillMaxSize(),

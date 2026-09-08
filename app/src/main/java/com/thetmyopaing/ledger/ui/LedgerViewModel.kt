@@ -23,6 +23,8 @@ import com.thetmyopaing.ledger.domain.parseAmount
 import com.thetmyopaing.ledger.domain.QuickFormat
 import com.thetmyopaing.ledger.domain.parseAhKway
 import com.thetmyopaing.ledger.domain.parsePatThi
+import com.thetmyopaing.ledger.domain.isValidSession
+import com.thetmyopaing.ledger.domain.parseBusinessDate
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -115,6 +117,15 @@ class LedgerViewModel(application: Application) : AndroidViewModel(application) 
     ) {
         viewModelScope.launch {
             val state = _uiState.value.snapshot
+            if (state.customers.none { it.id == customerId && it.agentId == agentId }) {
+                return@launch notify("Customer နှင့် Agent ဆက်နွယ်မှု မမှန်ပါ")
+            }
+            if (parseBusinessDate(date) == null) {
+                return@launch notify("ရက်စွဲကို YYYY-MM-DD ပုံစံဖြင့် ထည့်ပါ")
+            }
+            if (!isValidSession(session)) {
+                return@launch notify("မနက် သို့မဟုတ် ညနေကို ရွေးပါ")
+            }
             if (state.closedDays.any { it.date == date }) {
                 return@launch notify("ဒီရက်သည် Closed Day ဖြစ်သောကြောင့် စာရင်းသွင်း၍မရပါ")
             }
@@ -202,7 +213,12 @@ class LedgerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun saveClosedDay(date: String) {
-        if (date.isBlank()) return notify("ရက်စွဲရွေးပါ")
+        val parsedDate = parseBusinessDate(date)
+            ?: return notify("ရက်စွဲကို YYYY-MM-DD ပုံစံဖြင့် ထည့်ပါ")
+        val today = parseBusinessDate(com.thetmyopaing.ledger.domain.businessToday())!!
+        if (parsedDate.isBefore(today)) {
+            return notify("အတိတ်ရက်ကို Closed Day အဖြစ် မရွေးနိုင်ပါ")
+        }
         viewModelScope.launch {
             repository.saveClosedDay(ClosedDayEntity(UUID.randomUUID().toString(), date))
             refresh()
@@ -217,6 +233,12 @@ class LedgerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun saveWinningNumber(date: String, session: String, digit: String) {
+        if (parseBusinessDate(date) == null) {
+            return notify("ရက်စွဲကို YYYY-MM-DD ပုံစံဖြင့် ထည့်ပါ")
+        }
+        if (!isValidSession(session)) {
+            return notify("မနက် သို့မဟုတ် ညနေကို ရွေးပါ")
+        }
         val normalized = normalizeDigit(digit)
             ?: return notify("Winning Number သည် 00–99 ဖြစ်ရပါမည်")
         viewModelScope.launch {
